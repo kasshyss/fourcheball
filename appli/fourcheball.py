@@ -5,9 +5,22 @@ import m_conf as conf
 import http.client
 import bs4
 
+from googleapiclient import discovery
+from pprint import pprint
+import httplib2
+
 # init
 web_site = conf.get_conf('app.conf')['site']
 target = conf.get_conf('app.conf')['target']
+spreadsheet_target = conf.get_conf('app.conf')['spreadsheet']
+spreadsheet_range = conf.get_conf('app.conf')['range']
+spreadsheet_value_input_option = conf.get_conf('app.conf')['value_input_option']
+spreadsheet_data_input_option = conf.get_conf('app.conf')['data_input_option']
+
+credentials = conf.get_google_credentials()
+c_http = credentials.authorize(httplib2.Http())
+discoveryUrl = ('https://sheets.googleapis.com/$discovery/rest?' 'version=v4')
+service = discovery.build('sheets', 'v4', http = c_http, discoveryServiceUrl=discoveryUrl)
 
 
 l1_conn = http.client.HTTPSConnection(web_site)
@@ -21,6 +34,32 @@ l1_result = {}
 # for each row get the rank and the club name   
 for raw in ranking.find_all('tr', class_='standing-table__row'):
     l1_result[raw.find('td', class_='standing-table__cell standing-table__cell--position').contents[0]] = raw.find('td', class_='standing-table__cell standing-table__cell--team').find('span', class_='text').contents[0]
+# Connect to fourcheball spreatsheet
 
+values = [
+            [l1_result['1']]
+            ,[l1_result['2']]
+            ,[l1_result['3']]
+            ,[l1_result['4']]
+            ,[l1_result['5']]
+            ,[l1_result['5']]
+            ,[l1_result['7']]
+            ,[l1_result['8']]
+            ,[l1_result['9']]
+            ,[l1_result['10']]
+            ,[l1_result['11']]
+            ,[l1_result['12']]
+            ,[l1_result['14']]
+            ,[l1_result['15']]
+            ,[l1_result['16']]
+            ,[l1_result['17']]
+            ,[l1_result['18']]
+            ,[l1_result['19']]
+            ,[l1_result['20']]
+        ]
+body = {
+        'values' : values
+        }
 
-print l1_result
+result = service.spreadsheets().values().update(spreadsheetId = spreadsheet_target, range=spreadsheet_range, valueInputOption = spreadsheet_value_input_option,body = body).execute()
+print result
