@@ -3,9 +3,16 @@
 import os
 from oauth2client.file import Storage
 
+def add_space(item, size):
+    item_len = len(str(item))
+    item = str(item)
+    if item_len >= size:
+        return item
+    for i in range(size - item_len):
+        item = ' ' + item
+    return item
+
 #NOTE : conf file is two parts : Label|Value
-
-
 def get_conf(file_name):
 
     try:

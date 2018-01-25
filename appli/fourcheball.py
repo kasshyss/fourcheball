@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 import m_conf as conf
 
@@ -16,6 +17,7 @@ spreadsheet_target = conf.get_conf('app.conf')['spreadsheet']
 spreadsheet_range = conf.get_conf('app.conf')['range']
 spreadsheet_value_input_option = conf.get_conf('app.conf')['value_input_option']
 spreadsheet_data_input_option = conf.get_conf('app.conf')['data_input_option']
+spreadsheet_result = conf.get_conf('app.conf')['result_range']
 
 credentials = conf.get_google_credentials()
 c_http = credentials.authorize(httplib2.Http())
@@ -62,5 +64,13 @@ body = {
         'values' : values
         }
 
-result = service.spreadsheets().values().update(spreadsheetId = spreadsheet_target, range=spreadsheet_range, valueInputOption = spreadsheet_value_input_option,body = body).execute()
-print result
+service.spreadsheets().values().update(spreadsheetId = spreadsheet_target, range=spreadsheet_range, valueInputOption = spreadsheet_value_input_option,body = body).execute()
+# get score
+result = service.spreadsheets().values().get(spreadsheetId = spreadsheet_target, range=spreadsheet_result).execute()
+fourcheball_result = [u'Fourcheballer | Point | Rang']
+for item in  result['values']:
+    fourcheball_result.append(conf.add_space(item[0], 13) + ' | ' + conf.add_space(item[1], 5) + ' | ' + conf.add_space(item[2], 4))
+    
+print fourcheball_result
+
+
