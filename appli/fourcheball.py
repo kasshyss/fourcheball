@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import m_conf as conf
+import m_tchatbox as bot
+import time
 
 import http.client
 import bs4
@@ -21,27 +23,28 @@ spreadsheet_range = conf.get_conf('app.conf')['range']
 spreadsheet_value_input_option = conf.get_conf('app.conf')['value_input_option']
 spreadsheet_data_input_option = conf.get_conf('app.conf')['data_input_option']
 spreadsheet_result = conf.get_conf('app.conf')['result_range']
+jean_paul = bot.init()
 
 credentials = conf.get_google_credentials()
 c_http = credentials.authorize(httplib2.Http())
 discoveryUrl = ('https://sheets.googleapis.com/$discovery/rest?' 'version=v4')
 service = discovery.build('sheets', 'v4', http = c_http, discoveryServiceUrl=discoveryUrl)
 
+def update_score():
+    l1_conn = http.client.HTTPSConnection(web_site)
+    l1_conn.request('GET', target)
+    resp = l1_conn.getresponse()
+    #parse anwers
+    soup = bs4.BeautifulSoup(resp.read(), 'html.parser')
+    # get ranking tab
+    ranking = soup.find('tbody')
+    l1_result = {}
+    # for each row get the rank and the club name   
+    for raw in ranking.find_all('tr', class_='standing-table__row'):
+        l1_result[int(raw.find('td', class_='standing-table__cell standing-table__cell--position').contents[0])] = raw.find('td', class_='standing-table__cell standing-table__cell--team').find('span', class_='text').contents[0]
+    # Connect to fourcheball spreatsheet
 
-l1_conn = http.client.HTTPSConnection(web_site)
-l1_conn.request('GET', target)
-resp = l1_conn.getresponse()
-# parse anwers
-soup = bs4.BeautifulSoup(resp.read(), 'html.parser')
-# get ranking tab
-ranking = soup.find('tbody')
-l1_result = {}
-# for each row get the rank and the club name   
-for raw in ranking.find_all('tr', class_='standing-table__row'):
-    l1_result[int(raw.find('td', class_='standing-table__cell standing-table__cell--position').contents[0])] = raw.find('td', class_='standing-table__cell standing-table__cell--team').find('span', class_='text').contents[0]
-# Connect to fourcheball spreatsheet
-
-values = [
+    values = [
             [l1_result[1]]
             ,[l1_result[2]]
             ,[l1_result[3]]
@@ -63,21 +66,37 @@ values = [
             ,[l1_result[19]]
             ,[l1_result[20]]
         ]
-body = {
+    body = {
         'values' : values
         }
 
-service.spreadsheets().values().update(spreadsheetId = spreadsheet_target, range=spreadsheet_range, valueInputOption = spreadsheet_value_input_option,body = body).execute()
-# get score
-result = service.spreadsheets().values().get(spreadsheetId = spreadsheet_target, range=spreadsheet_result).execute()
-fourcheball_result = 'Fourcheballer   Point   Rang\n'
-for item in  result['values']:
-    fourcheball_result = fourcheball_result + conf.add_space(item[0], 13) + '   ' + conf.add_space(item[1], 5) + '   ' + conf.add_space(item[2], 4) + '\n'
+    service.spreadsheets().values().update(spreadsheetId = spreadsheet_target, range=spreadsheet_range, valueInputOption = spreadsheet_value_input_option,body = body).execute()
+    # get score
+    result = service.spreadsheets().values().get(spreadsheetId = spreadsheet_target, range=spreadsheet_result).execute()
+    fourcheball_result = 'Fourcheballer   Point   Rang\n'
+    for item in  result['values']:
+        fourcheball_result = fourcheball_result + conf.add_space(item[0], 13) + '   ' + conf.add_space(item[1], 5) + '   ' + conf.add_space(item[2], 4) + '\n'
+    return fourcheball_result
 
-print fourcheball_result
 
+fb_thread=int(conf.get_conf('app.conf')['fb_message_id'])
+fb_last_msg=''
 fb_client = Client(conf.get_conf('app.conf')['fb_login'], conf.get_conf('app.conf')['fb_pass'])
-#fb_client.send(Message(text = 'Salut les nazes, c\'est l\'heure du classement'), thread_id=int(conf.get_conf('app.conf')['fb_message_id']), thread_type=ThreadType.GROUP)
-#fb_client.send(Message(text = fourcheball_result), thread_id=int(conf.get_conf('app.conf')['fb_message_id']), thread_type=ThreadType.GROUP)
-fb_client.logout()
+fb_client.send(Message(text = 'Salut les p\'tit péres.'), thread_id=fb_thread, thread_type=ThreadType.GROUP)
+while True:
+    last_message = fb_client.fetchThreadMessages(thread_id = fb_thread, limit = 1)[0].text
+    time.sleep(2)
+    if last_message[:3:] == 'JP ':
+        print last_message
+        if last_message[3::] == 'dodo':
+            fb_client.send(Message(text = 'T\'cho m\'me casse les noobs !'), thread_id=fb_thread, thread_type=ThreadType.GROUP)
+            fb_client.logout()
+            break
+        elif last_message[3::]=='score':
+            result = update_score()
+            fb_client.send(Message(text = 'Salut les nazes, c\'est l\'heure du classement'), thread_id=fb_thread, thread_type=ThreadType.GROUP) 
+            fb_client.send(Message(text = result), thread_id=fb_thread, thread_type=ThreadType.GROUP)
+        else:
+            msg = bot.robot_speak(jean_paul, last_message[3::])
+            fb_client.send(Message(text = msg), thread_id=fb_thread, thread_type=ThreadType.GROUP)
 

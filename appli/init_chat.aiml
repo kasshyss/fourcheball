@@ -1,0 +1,25 @@
+<aiml version="1.0.1" encoding="UTF-8">
+
+	<category>
+		<pattern>BONJOUR</pattern>
+		<template>
+			Wesh ma guele
+		</template>
+	</category>
+	<category>
+		<pattern>NOM</pattern>
+		<template>
+			A440, LOL ! Je suis Jean-Paul
+		</template>
+	</category>
+	<category>
+		<pattern>UN JOUR *</pattern>
+		<template>
+			<random>
+				<li>Super cousin, je m'en tamponne</li>
+				<li>bla bla bla bla... osef joseph</li>
+				<li>Super profond ce que tu dis, j'avais jamais vu ca comme ça. Allez maintenant on baise !</li>
+			</random>
+		</template>
+	</category>
+</aiml>
