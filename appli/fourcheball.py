@@ -97,6 +97,9 @@ while True:
             fb_client.send(Message(text = 'Salut les nazes, c\'est l\'heure du classement'), thread_id=fb_thread, thread_type=ThreadType.GROUP) 
             fb_client.send(Message(text = result), thread_id=fb_thread, thread_type=ThreadType.GROUP)
         else:
-            msg = bot.robot_speak(jean_paul, last_message[3::])
+            try:
+                msg = bot.robot_speak(jean_paul, last_message[3::])[:30:]
+            except ValueError:
+                print ValueError
             fb_client.send(Message(text = msg), thread_id=fb_thread, thread_type=ThreadType.GROUP)
 

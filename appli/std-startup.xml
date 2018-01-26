@@ -4,6 +4,21 @@
 
 		<template>
 			<learn>init_chat.aiml</learn>
+			<learn>quand_fr.aiml</learn>
+			<learn>humor_fr.aiml</learn>
+			<learn>pourquoi_fr.aiml</learn>
+			<learn>ou_fr.aiml</learn>
+			<learn>quel_fr.aiml</learn>
+			<learn>comment_fr.aiml</learn>
+			<learn>qui_fr.aiml</learn>
+			<learn>atomic_1_fr.aiml</learn>
+			<learn>atomic_2_fr.aiml</learn>
+			<learn>queceque_1_fr.aiml</learn>
+			<learn>queceque_2_fr.aiml</learn>
+			<learn>queceque_3_fr.aiml</learn>
+			<learn>srai_1_fr.aiml</learn>
+			<learn>srai_2_fr.aiml</learn>
+			<learn>srai_3_fr.aiml</learn>
 		</template>
 	</category>
 </aiml>
