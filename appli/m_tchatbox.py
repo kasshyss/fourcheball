@@ -8,7 +8,7 @@ import os
 def init():
     bot = aiml.Kernel()
     bot.setBotPredicate("name", "Jean-Paul")
-    bot.learn(os.path.dirname(os.path.realpath(__file__))+os.path.sep+'std-startup.xml')
+    #bot.learn(os.path.dirname(os.path.realpath(__file__))+os.path.sep+'std-startup.xml')
     bot.respond("load aiml b")
     return bot
 

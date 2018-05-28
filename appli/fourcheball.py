@@ -78,7 +78,6 @@ def update_score():
         fourcheball_result = fourcheball_result + conf.add_space(item[0], 13) + '   ' + conf.add_space(item[1], 5) + '   ' + conf.add_space(item[2], 4) + '\n'
     return fourcheball_result
 
-
 fb_thread=int(conf.get_conf('app.conf')['fb_message_id'])
 fb_last_msg=''
 fb_client = Client(conf.get_conf('app.conf')['fb_login'], conf.get_conf('app.conf')['fb_pass'])
