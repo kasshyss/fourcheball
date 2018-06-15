@@ -3,9 +3,6 @@
 
 ### Parse web site and get relevant data
 
-import bs4
-import httplib2
-import http.client
 
 # Parse a web page to get French Ligue 1
 # return : dico[rank]=team name
