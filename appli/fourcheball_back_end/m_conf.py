@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import os
-from oauth2client.file import Storage
 
 def add_space(item, size):
     item_len = len(str(item))
