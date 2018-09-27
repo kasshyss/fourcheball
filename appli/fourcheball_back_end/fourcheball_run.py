@@ -79,13 +79,19 @@ def fb_messages():
 # send message to fb thread
 @app.route('/fourcheball_end_point/serv_fb/send_msg', )
 def send_fb_msg():
-    logger.info('Send new message to fb')
-    msg = request.args.get('msg')
-    logger.info('Message : {}'.format(msg))
+    logger.debug('send_fb_msg:Init function')
+    msg = ''
     fb_thread = int(app_conf['fb_thread'])
-    fb_client = Client(app_conf['fb_login'],app_conf['fb_password'])
-    fb_client.send(Message(text = msg), thread_id = fb_thread, thread_type = ThreadType.GROUP)
-    logger.info('Message posted')
+    try:
+        msg = request.args.get('msg')
+        logger.debug('send_fb_msg:New message : {}'.format(msg))
+        fb_client = Client(app_conf['fb_login'],app_conf['fb_password'])
+        logger.debug('send_fb_msg:Send message')
+        fb_client.send(Message(text = msg), thread_id = fb_thread, thread_type = ThreadType.GROUP)
+        logger.info('send_fb_msg:Message posted on facebook')
+    except ValueError:
+        logger.error('send_fb_msg:Fail to post message in thread {}'.format(fb_thread))
+    logger.debug('send_fb_msg:Exit function')
     return fb_messages()
 
 # get player ranking from google spreadsheet
