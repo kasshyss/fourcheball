@@ -42,22 +42,32 @@ def ranking_l1():
     for raw in ranking.find_all('tr', class_='standing-table__row'):
         l1_result[i+1] = raw.find('td', class_='standing-table__cell standing-table__cell--team').find('span', class_='text').contents[0]
         i=i+1
-    logger.debug('return dico')
+    logger.debug('ranking_l1:Exit function')
     return json.dumps(l1_result, ensure_ascii=False)
 
 # return last 3 messages from a a fb conversation
 @app.route('/fourcheball_end_point/serv_fb/get_last_messages')
 def fb_messages():
-    logger.info('Get last fb messages : init')
-    fb_thread = int(app_conf['fb_thread'])
-    fb_client = Client(app_conf['fb_login'],app_conf['fb_password'])
-    logger.info('Get last fb messages : grab last messages')
-    last_messages = fb_client.fetchThreadMessages(thread_id = fb_thread, limit = 3)
-    msg = {} 
-    msg[0] = last_messages[2].text
-    msg[1] = last_messages[1].text
-    msg[2] = last_messages[0].text
-    logger.info('Get last fb messages : return result')
+    logger.debug('fb_messages:Init function')
+    msg = {}
+    msg[0] = ''
+    msg[1] = ''
+    msg[2] = ''
+
+    try:
+        logger.debug('fb_messages:Init channel')
+        fb_thread = int(app_conf['fb_thread'])
+        fb_client = Client(app_conf['fb_login'],app_conf['fb_password'])
+        logger.debug('fb_messages:Fetch last 3 messages')
+        last_messages = fb_client.fetchThreadMessages(thread_id = fb_thread, limit = 3)
+        msg[0] = last_messages[2].text
+        msg[1] = last_messages[1].text
+        msg[2] = last_messages[0].text
+        logger.info('fb:messages:Messages fetched from thread {}'.format(fb_thread))
+    except ValueError:
+        logger.error('fb_messages:Fail to reach fb messages')
+    
+    logger.debug('fb_messages:Exit function')
     return json.dumps(msg, ensure_ascii=False)
 
 # send message to fb thread
