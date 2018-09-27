@@ -4,6 +4,10 @@ import os
 import logging
 from enum import Enum
 
+logging.basicConfig()
+logger = logging.getLogger('m_config')
+logger.setLevel(logger_level.CURRENT_LEVEL.value)
+
 def add_space(item, size):
     item_len = len(str(item))
     item = str(item)
@@ -15,16 +19,32 @@ def add_space(item, size):
 
 #NOTE : conf file is two parts : Label|Value
 def get_conf(file_name):
+    
+    logger.debug('get_conf:Init function') 
+    data = {}
+    lines = []
+
+    if isinstance(file_name, str) is False:
+        logger.error('get_conf:Wrong parameter type, string is require.')
+        logger.debug('get_conf:Exit function')
+        return data
 
     try:
+        logger.debug('get_conf:Fech data from file {}'.format(file_name))
         file = open(os.path.dirname(os.path.abspath(__file__)) + os.path.sep + 'conf' + os.path.sep + file_name, 'r')  
         lines = file.readlines()
         file.close()
     except ValueError:
-        print 'Unable to open the log file ' + str(file_name) + str('\n')
-    data = {}
-    for line in lines:
-        data[line.split('|')[0]] = line.split('|')[1][:-1:]
+        logger.error('get_conf:Unable to open the log file {}'.format(file_name))
+        logger.debug('get_conf:Exit function')
+        return data
+    if len(lines) != 0:
+        logger.debug('get_conf:Organise conf in a dico')
+        for line in lines:
+            data[line.split('|')[0]] = line.split('|')[1][:-1:]
+    
+    logger.info('get_conf:Return conf for {}'.format(file_name))
+    logger.debug('get_conf:Exit function')
     return data
 
 # see google tutorial to generate credentials for the app
