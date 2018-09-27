@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
 import os
+import logging
+from enum import Enum
 
 def add_space(item, size):
     item_len = len(str(item))
@@ -46,3 +48,7 @@ def get_google_credentials():
         print('Storing credentials to ' + credential_path)
     return credentials
    
+
+class logger_level(Enum):
+
+    CURRENT_LEVEL = logging.DEBUG
