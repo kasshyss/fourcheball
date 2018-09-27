@@ -25,23 +25,29 @@ def index():
 # this url return L1 current ranking
 @app.route('/fourcheball_end_point/serv_L1/ranking_L1')
 def ranking_l1():
-    logger.info('Get L1 ranking : new demand')
+    logger.debug('ranking_l1:Init function')
     # Set up client url
-    logger.info('Get L1 ranking : grab data from website')
-    url = app_conf['web_site'] + app_conf['web_target'] 
-    # get html data
-    resp = requests.get(url)
-    logger.info('Get L1 ranking : parse html')
-    soup = bs4.BeautifulSoup(resp.text, 'html.parser')
-    # get ranking tab
-    ranking = soup.find('tbody')
-    logger.info('Get L1 ranking : set up return')
-    l1_result = {}
-    i=0
-    # for each row get the rank and the club name   
-    for raw in ranking.find_all('tr', class_='standing-table__row'):
-        l1_result[i+1] = raw.find('td', class_='standing-table__cell standing-table__cell--team').find('span', class_='text').contents[0]
-        i=i+1
+    web_site = app_conf['web_site'] 
+    web_target = app_conf['web_target']
+    url = web_site + web_target
+    l1_result={}
+    i = 0
+
+    try:
+        logger.debug('ranking_l1:Fetch data from target {}'.format(url))
+        resp = requests.get(url)
+        logger.debug('ranking_l1:Parse HTML')
+        soup = bs4.BeautifulSoup(resp.text, 'html.parser')
+        # get ranking tab
+        ranking = soup.find('tbody')
+        logger.debug('ranking_l1:Prepare output')
+        # for each row get the rank and the club name   
+        for raw in ranking.find_all('tr', class_='standing-table__row'):
+            l1_result[i+1] = raw.find('td', class_='standing-table__cell standing-table__cell--team').find('span', class_='text').contents[0]
+            i = i+1
+        logger.info('ranking_l1:L1 ranking fetched')
+    except ValueError:
+        logger.error('ranking_l1:Fail to fetch L1 ranking on {}'.format(web_site))
     logger.debug('ranking_l1:Exit function')
     return json.dumps(l1_result, ensure_ascii=False)
 
