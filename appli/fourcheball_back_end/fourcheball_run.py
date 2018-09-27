@@ -72,7 +72,7 @@ def send_fb_msg():
     logger.info('Message posted')
     return fb_messages()
 
-
+# get player ranking from google spreadsheet
 @app.route('/fourcheball_end_point/serv_L1/ranking_player')
 def get_ranking_player():
     print 'TBD PLAYER RANKING'
