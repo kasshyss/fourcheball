@@ -2,11 +2,11 @@
 
 import os
 import logging
-from enum import Enum
+import e_conf as c
 
 logging.basicConfig()
 logger = logging.getLogger('m_config')
-logger.setLevel(logger_level.CURRENT_LEVEL.value)
+logger.setLevel(c.logger_level.CURRENT_LEVEL.value)
 
 def add_space(item, size):
     item_len = len(str(item))
@@ -30,7 +30,7 @@ def get_conf(file_name):
         return data
 
     try:
-        logger.debug('get_conf:Fech data from file {}'.format(file_name))
+        logger.debug('get_conf:Fetch data from file {}'.format(file_name))
         file = open(os.path.dirname(os.path.abspath(__file__)) + os.path.sep + 'conf' + os.path.sep + file_name, 'r')  
         lines = file.readlines()
         file.close()
@@ -69,6 +69,4 @@ def get_google_credentials():
     return credentials
    
 
-class logger_level(Enum):
 
-    CURRENT_LEVEL = logging.DEBUG

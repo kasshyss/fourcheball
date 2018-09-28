@@ -7,17 +7,17 @@ import bs4
 import json
 import requests
 import m_conf as conf
+import e_conf as c
 import logging
 from fbchat import Client
 from fbchat.models import *
 
-logger.debug('fourcheball_run:Init Flask app')
 app = Flask(__name__)
 logging.basicConfig()
 logger = logging.getLogger('fourcheball')
-logger.setLevel(conf.logger_level.CURRENT_LEVEL.value)
+logger.setLevel(c.logger_level.CURRENT_LEVEL.value)
 app_conf = conf.get_conf('back_end.conf')
-logger.debug('fourcheball_run:Init done')
+logger.info('fourcheball_run:Init done')
 
 @app.route('/')
 def index():
